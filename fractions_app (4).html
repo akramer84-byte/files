@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Fraction Fashion Academy ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hot-pink:#FF2D78;--neon-mint:#00F5A0;--lavender:#C084FC;
+  --sky:#38BDF8;--gold:#FFD700;--coral:#FF6B6B;
+  --dark:#0F0A1E;--card-bg:rgba(255,255,255,0.07);--border:rgba(255,255,255,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--dark);font-family:'Nunito',sans-serif;color:white;display:flex;flex-direction:column;}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%,rgba(255,45,120,0.18) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 60% at 80% 80%,rgba(192,132,252,0.18) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 60% 10%,rgba(0,245,160,0.10) 0%,transparent 60%);
+  pointer-events:none;z-index:0;
+}
+#scrollArea{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative;z-index:1;padding-bottom:20px;}
+#bottomNav{position:relative;z-index:100;display:flex;background:rgba(15,10,30,0.97);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);flex-shrink:0;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;border:none;background:transparent;color:rgba(255,255,255,0.45);font-family:'Nunito',sans-serif;font-size:10px;font-weight:800;cursor:pointer;transition:color 0.2s;gap:4px;}
+.nav-btn .nav-icon{font-size:22px;line-height:1;}
+.nav-btn.active{color:var(--hot-pink);}
+.nav-btn.active .nav-icon{filter:drop-shadow(0 0 6px rgba(255,45,120,0.7));}
+.section{display:none;padding:16px;}
+.section.active{display:block;}
+.app-header{text-align:center;padding:20px 16px 10px;}
+.logo-badge{display:inline-block;background:linear-gradient(135deg,var(--hot-pink),var(--lavender));border-radius:50px;padding:5px 16px;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,8vw,3rem);font-weight:900;line-height:1.1;background:linear-gradient(135deg,#FF2D78,#C084FC,#00F5A0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
+.subtitle{color:rgba(255,255,255,0.55);font-size:13px;font-weight:600;}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+.sec-badge{background:var(--card-bg);border:1px solid var(--border);border-radius:50px;padding:3px 12px;font-size:11px;font-weight:800;color:rgba(255,255,255,0.55);}
+.cheat-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+@media(min-width:500px){.cheat-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:800px){.cheat-grid{grid-template-columns:1fr 1fr 1fr;}}
+.fraction-card{background:var(--card-bg);border:1px solid var(--border);border-radius:18px;padding:18px 16px;position:relative;overflow:hidden;}
+.fraction-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:18px 18px 0 0;}
+.card-whole::before{background:linear-gradient(90deg,#FFD700,#FF8C00);}
+.card-half::before{background:linear-gradient(90deg,#FF2D78,#FF6BAE);}
+.card-third::before{background:linear-gradient(90deg,#C084FC,#7C3AED);}
+.card-quarter::before{background:linear-gradient(90deg,#38BDF8,#0284C7);}
+.card-eighth::before{background:linear-gradient(90deg,#00F5A0,#059669);}
+.card-icon{font-size:24px;margin-bottom:8px;}
+.card-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:12px;}
+.triple-display{display:flex;gap:6px;}
+.triple-box{flex:1;background:rgba(0,0,0,0.25);border-radius:10px;padding:8px 4px;text-align:center;}
+.triple-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;opacity:0.55;margin-bottom:3px;}
+.triple-value{font-size:0.95rem;font-weight:900;}
+.fraction-val{font-size:1.1rem;}
+.visual-bar{margin-top:12px;height:8px;background:rgba(0,0,0,0.3);border-radius:20px;overflow:hidden;}
+.visual-fill{height:100%;border-radius:20px;}
+.fc-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.progress-track{width:100%;background:rgba(255,255,255,0.1);border-radius:20px;height:6px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--hot-pink),var(--lavender));transition:width 0.5s;}
+.progress-label{text-align:center;font-size:12px;font-weight:700;color:rgba(255,255,255,0.45);margin-top:5px;}
+.fc-scene{width:100%;max-width:460px;height:300px;cursor:pointer;perspective:1000px;}
+.fc-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.55s cubic-bezier(.25,.46,.45,.94);}
+.fc-scene.flipped .fc-inner{transform:rotateY(180deg);}
+.card-face{position:absolute;inset:0;border-radius:22px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;text-align:center;border:1px solid var(--border);}
+.card-front{background:linear-gradient(135deg,rgba(255,45,120,0.15),rgba(192,132,252,0.15));}
+.card-back{background:linear-gradient(135deg,rgba(0,245,160,0.12),rgba(56,189,248,0.12));transform:rotateY(180deg);}
+.fc-q-label{font-size:10px;font-weight:800;color:rgba(255,255,255,0.45);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;}
+.fc-main{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:white;line-height:1;}
+.fc-hint{color:rgba(255,255,255,0.3);font-size:12px;font-weight:700;margin-top:14px;}
+.fc-cat{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:50px;background:var(--card-bg);border:1px solid var(--border);}
+.answer-row{display:flex;gap:10px;margin-top:10px;}
+.answer-pill{background:rgba(0,0,0,0.3);border-radius:10px;padding:10px 14px;text-align:center;min-width:70px;}
+.answer-pill .alabel{font-size:9px;font-weight:800;opacity:0.5;letter-spacing:1px;text-transform:uppercase;}
+.answer-pill .aval{font-size:1.2rem;font-weight:900;margin-top:3px;}
+.memory-tip{margin-top:10px;padding:8px 12px;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:10px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.8);line-height:1.5;}
+.fc-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.btn{padding:11px 22px;border-radius:50px;border:none;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all 0.2s;}
+.btn-primary{background:linear-gradient(135deg,var(--hot-pink),var(--lavender));color:white;box-shadow:0 4px 16px rgba(255,45,120,0.35);}
+.btn-secondary{background:var(--card-bg);border:2px solid var(--border);color:rgba(255,255,255,0.8);}
+.btn:active{transform:scale(0.96);}
+.quiz-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.score-badge{background:linear-gradient(135deg,var(--neon-mint),var(--sky));color:var(--dark);font-weight:900;font-size:13px;padding:7px 16px;border-radius:50px;}
+.streak-badge{background:linear-gradient(135deg,var(--gold),var(--coral));color:var(--dark);font-weight:900;font-size:13px;padding:7px 16px;border-radius:50px;}
+.quiz-qcard{background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:22px 18px;text-align:center;margin-bottom:14px;}
+.quiz-ctx{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px;}
+.quiz-q{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,5vw,1.8rem);font-weight:700;line-height:1.3;}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.opt-btn{padding:14px 10px;border-radius:14px;border:2px solid var(--border);background:var(--card-bg);color:white;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all 0.2s;}
+.opt-btn:active:not(:disabled){transform:scale(0.97);}
+.opt-btn.correct{background:linear-gradient(135deg,rgba(0,245,160,0.3),rgba(0,245,160,0.1));border-color:var(--neon-mint);}
+.opt-btn.wrong{background:linear-gradient(135deg,rgba(255,45,120,0.2),rgba(255,45,120,0.05));border-color:var(--hot-pink);}
+.feedback{text-align:center;font-size:1rem;font-weight:800;min-height:24px;margin-bottom:8px;}
+.feedback.correct{color:var(--neon-mint);}
+.feedback.wrong{color:var(--coral);}
+.quiz-emoji{font-size:2rem;display:block;margin-bottom:4px;animation:pop 0.4s ease;}
+@keyframes pop{0%{transform:scale(0);}70%{transform:scale(1.3);}100%{transform:scale(1);}}
+.memory-tip-quiz{margin-top:10px;padding:9px 14px;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:10px;font-size:12px;font-weight:700;color:rgba(255,255,255,0.85);line-height:1.5;text-align:center;}
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.q-counter{color:rgba(255,255,255,0.35);font-size:12px;font-weight:700;}
+.results-card{text-align:center;padding:36px 24px;background:var(--card-bg);border:1px solid var(--border);border-radius:22px;}
+.big-score{font-family:'Playfair Display',serif;font-size:4.5rem;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--coral));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin:8px 0;}
+.grade-emoji{font-size:3.5rem;display:block;margin-bottom:8px;}
+.result-msg{font-size:1.1rem;font-weight:700;color:rgba(255,255,255,0.8);margin:6px 0 20px;}
+
+/* BALL SHOOTER GAME */
+#sec-game{padding:0;display:none;}
+#sec-game.active{display:flex;flex-direction:column;}
+#gameCanvas{display:block;width:100%;touch-action:none;}
+#gameUI{padding:12px 16px;display:flex;flex-direction:column;gap:10px;}
+#gameQuestion{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:14px 16px;text-align:center;}
+#gameQLabel{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:6px;}
+#gameQText{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;}
+#gameStats{display:flex;gap:10px;justify-content:center;}
+#gameLives{background:rgba(255,45,120,0.15);border:1px solid rgba(255,45,120,0.3);border-radius:50px;padding:6px 16px;font-size:13px;font-weight:800;}
+#gameScoreBadge{background:linear-gradient(135deg,var(--neon-mint),var(--sky));color:var(--dark);font-weight:900;font-size:13px;padding:6px 16px;border-radius:50px;}
+#gameMsg{text-align:center;font-size:1rem;font-weight:800;min-height:22px;}
+#gameMsg.good{color:var(--neon-mint);}
+#gameMsg.bad{color:var(--coral);}
+#gameOverScreen{display:none;position:absolute;inset:0;background:rgba(15,10,30,0.93);z-index:50;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:30px;text-align:center;}
+#gameOverScreen.show{display:flex;}
+#gameWrap{position:relative;flex:1;}
+.confetti-p{position:fixed;width:9px;height:9px;border-radius:2px;pointer-events:none;z-index:9999;animation:cfFall 2s ease-in forwards;}
+@keyframes cfFall{0%{opacity:1;transform:translateY(-10px) rotate(0);}100%{opacity:0;transform:translateY(80vh) rotate(720deg);}}
+</style>
+</head>
+<body>
+
+<div id="scrollArea">
+  <div class="app-header">
+    <div class="logo-badge">✨ Math is Chic ✨</div>
+    <h1>Fraction Fashion<br>Academy</h1>
+    <p class="subtitle">Master fractions, decimals & percentages 🏆</p>
+  </div>
+
+  <!-- CHEAT SHEET -->
+  <div class="section active" id="sec-cheatsheet">
+    <div class="sec-head"><span class="sec-title">The Lineup 💅</span><span class="sec-badge">10 must-knows</span></div>
+    <div class="cheat-grid" id="cheatGrid"></div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div class="section" id="sec-flashcards">
+    <div class="sec-head"><span class="sec-title">Flash Cards 🃏</span><span class="sec-badge">Tap to flip!</span></div>
+    <div class="fc-wrap">
+      <div style="width:100%;max-width:460px;">
+        <div class="progress-track"><div class="progress-fill" id="fcProg" style="width:0%"></div></div>
+        <div class="progress-label" id="fcLabel">Card 1 of 40</div>
+      </div>
+      <div class="fc-scene" id="fcScene" onclick="flipCard()">
+        <div class="fc-inner">
+          <div class="card-face card-front" id="cfFront"></div>
+          <div class="card-face card-back" id="cfBack"></div>
+        </div>
+      </div>
+      <div class="fc-controls">
+        <button class="btn btn-secondary" onclick="prevCard()">← Back</button>
+        <button class="btn btn-primary" onclick="nextCard()">Next →</button>
+        <button class="btn btn-secondary" onclick="shuffleCards()">🔀 Shuffle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section" id="sec-quiz">
+    <div class="quiz-topbar">
+      <span class="sec-title">Quiz Me! 🏁</span>
+      <div style="display:flex;gap:8px;">
+        <span class="score-badge" id="scoreDisp">Score: 0</span>
+        <span class="streak-badge" id="streakDisp">🔥 0</span>
+      </div>
+    </div>
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<!-- BALL SHOOTER — outside scrollArea so canvas fills properly -->
+<div id="sec-game">
+  <div id="gameWrap">
+    <canvas id="gameCanvas"></canvas>
+    <div id="gameOverScreen">
+      <div style="font-size:3rem;" id="goEmoji">🏆</div>
+      <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;" id="goTitle">Game Over!</div>
+      <div style="font-size:1rem;font-weight:700;color:rgba(255,255,255,0.7);" id="goMsg">Nice run!</div>
+      <div style="font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;background:linear-gradient(135deg,#FFD700,#FF6B6B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="goScore">0</div>
+      <button class="btn btn-primary" onclick="startGame()">🔄 Play Again</button>
+    </div>
+  </div>
+  <div id="gameUI">
+    <div id="gameStats">
+      <span id="gameLives">❤️❤️❤️</span>
+      <span id="gameScoreBadge">Score: 0</span>
+    </div>
+    <div id="gameQuestion">
+      <div id="gameQLabel">Shoot the correct answer!</div>
+      <div id="gameQText">Loading...</div>
+    </div>
+    <div id="gameMsg"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div id="bottomNav">
+  <button class="nav-btn active" onclick="switchTab('cheatsheet',this)">
+    <span class="nav-icon">📋</span>Cheat Sheet
+  </button>
+  <button class="nav-btn" onclick="switchTab('flashcards',this)">
+    <span class="nav-icon">🃏</span>Flash Cards
+  </button>
+  <button class="nav-btn" onclick="switchTab('quiz',this)">
+    <span class="nav-icon">🏁</span>Quiz Me!
+  </button>
+  <button class="nav-btn" onclick="switchTab('game',this)">
+    <span class="nav-icon">🎯</span>Ball Blast
+  </button>
+</div>
+
+<script>
+// ═══════════════════════════════
+// DATA
+// ═══════════════════════════════
+const fractions=[
+  {id:'whole',label:'One Whole',fraction:'1',decimal:'1.0',percent:'100%',icon:'🏆',fill:100,colorA:'#FFD700',colorB:'#FF8C00',theme:'card-whole',tip:'Easy one! 1 whole = the ENTIRE thing. 100% means ALL of it. Think: scored 100% on a test = perfect!'},
+  {id:'half',label:'One Half',fraction:'1/2',decimal:'0.5',percent:'50%',icon:'⚽',fill:50,colorA:'#FF2D78',colorB:'#FF6BAE',theme:'card-half',tip:'Half always ends in .5 — think 50 cents = half a dollar. Split anything in 2 equal parts = one half!'},
+  {id:'third',label:'One Third',fraction:'1/3',decimal:'0.333...',percent:'33.3%',icon:'👗',fill:33.3,colorA:'#C084FC',colorB:'#7C3AED',theme:'card-third',tip:'The 3s repeat FOREVER! 0.333... = 33.3% — thirds are the ONLY ones with a repeating decimal!'},
+  {id:'twothirds',label:'Two Thirds',fraction:'2/3',decimal:'0.666...',percent:'66.7%',icon:'👠',fill:66.7,colorA:'#C084FC',colorB:'#7C3AED',theme:'card-third',tip:'The 6s repeat! 0.666... = 66.7% — it is double the third (0.333 x 2). Almost 3/4 but not quite!'},
+  {id:'quarter',label:'One Quarter',fraction:'1/4',decimal:'0.25',percent:'25%',icon:'💎',fill:25,colorA:'#38BDF8',colorB:'#0284C7',theme:'card-quarter',tip:'A quarter coin = 25 cents = $0.25 = 25%! You already knew this one. Money = fractions!'},
+  {id:'twoquarters',label:'Two Quarters',fraction:'2/4',decimal:'0.5',percent:'50%',icon:'💸',fill:50,colorA:'#38BDF8',colorB:'#0284C7',theme:'card-quarter',tip:'2 quarters = 50 cents = same as 1/2! Whenever you see 2/4, think of it as 1/2 in disguise.'},
+  {id:'threequarters',label:'Three Quarters',fraction:'3/4',decimal:'0.75',percent:'75%',icon:'🏎️',fill:75,colorA:'#38BDF8',colorB:'#0284C7',theme:'card-quarter',tip:'Three quarters = 75 cents = $0.75 = 75%! Think: 3/4 charged phone = 75% battery. Almost full!'},
+  {id:'eighth',label:'One Eighth',fraction:'1/8',decimal:'0.125',percent:'12.5%',icon:'🌟',fill:12.5,colorA:'#00F5A0',colorB:'#059669',theme:'card-eighth',tip:'0.125 — say "one-two-five." It is half of a quarter (0.25 divided by 2). Tiny pizza slice!'},
+  {id:'threeeighths',label:'Three Eighths',fraction:'3/8',decimal:'0.375',percent:'37.5%',icon:'🌸',fill:37.5,colorA:'#00F5A0',colorB:'#059669',theme:'card-eighth',tip:'0.375 — say "three-seven-five." Sits between 1/4 (25%) and 1/2 (50%). Closer to the middle!'},
+  {id:'fiveeighths',label:'Five Eighths',fraction:'5/8',decimal:'0.625',percent:'62.5%',icon:'✨',fill:62.5,colorA:'#00F5A0',colorB:'#059669',theme:'card-eighth',tip:'0.625 — say "six-two-five." Think: 1/2 + 1/8 = 0.5 + 0.125 = 0.625. More than half, less than 3/4!'}
+];
+
+// ═══════════════════════════════
+// CHEAT SHEET
+// ═══════════════════════════════
+function buildCheatSheet(){
+  const g=document.getElementById('cheatGrid');
+  fractions.forEach(f=>{
+    const d=document.createElement('div');
+    d.className='fraction-card '+f.theme;
+    d.innerHTML=`<div class="card-icon">${f.icon}</div>
+      <div class="card-title">${f.label}</div>
+      <div class="triple-display">
+        <div class="triple-box"><div class="triple-label">Fraction</div><div class="triple-value fraction-val">${f.fraction}</div></div>
+        <div class="triple-box"><div class="triple-label">Decimal</div><div class="triple-value">${f.decimal}</div></div>
+        <div class="triple-box"><div class="triple-label">Percent</div><div class="triple-value">${f.percent}</div></div>
+      </div>
+      <div class="visual-bar"><div class="visual-fill" style="width:${f.fill}%;background:linear-gradient(90deg,${f.colorA},${f.colorB})"></div></div>`;
+    g.appendChild(d);
+  });
+}
+
+// ═══════════════════════════════
+// FLASHCARDS
+// ═══════════════════════════════
+let fcDeck=[],fcIdx=0,fcFlipped=false;
+function buildDeck(){
+  fcDeck=[];
+  fractions.forEach(f=>{
+    fcDeck.push({q:`Decimal for <b style="color:#FF2D78">${f.fraction}</b>?`,a:f.decimal,extra:f.percent,extraLbl:'Percent',cat:f.label,icon:f.icon,tip:f.tip});
+    fcDeck.push({q:`Percentage for <b style="color:#C084FC">${f.fraction}</b>?`,a:f.percent,extra:f.decimal,extraLbl:'Decimal',cat:f.label,icon:f.icon,tip:f.tip});
+    fcDeck.push({q:`Fraction equal to <b style="color:#38BDF8">${f.percent}</b>?`,a:f.fraction,extra:f.decimal,extraLbl:'Decimal',cat:f.label,icon:f.icon,tip:f.tip});
+    fcDeck.push({q:`Fraction equal to <b style="color:#00F5A0">${f.decimal}</b>?`,a:f.fraction,extra:f.percent,extraLbl:'Percent',cat:f.label,icon:f.icon,tip:f.tip});
+  });
+  fcDeck=fcDeck.sort(()=>Math.random()-0.5);
+}
+function renderFC(){
+  const c=fcDeck[fcIdx];
+  document.getElementById('fcScene').classList.remove('flipped');
+  fcFlipped=false;
+  document.getElementById('cfFront').innerHTML=`
+    <span class="fc-cat">${c.icon} ${c.cat}</span>
+    <div style="margin-top:16px;font-size:1.15rem;font-weight:700;line-height:1.5;">${c.q}</div>
+    <div class="fc-hint" style="margin-top:16px;">👆 Tap to flip!</div>`;
+  document.getElementById('cfBack').innerHTML=`
+    <span class="fc-cat">${c.icon} ${c.cat}</span>
+    <div class="fc-q-label" style="margin-top:12px;">Answer</div>
+    <div class="fc-main">${c.a}</div>
+    <div class="answer-row"><div class="answer-pill"><div class="alabel">${c.extraLbl}</div><div class="aval">${c.extra}</div></div></div>
+    <div class="memory-tip">💡 ${c.tip}</div>`;
+  const pct=fcDeck.length>1?(fcIdx/(fcDeck.length-1)*100):100;
+  document.getElementById('fcProg').style.width=pct+'%';
+  document.getElementById('fcLabel').textContent='Card '+(fcIdx+1)+' of '+fcDeck.length;
+}
+function flipCard(){fcFlipped=!fcFlipped;document.getElementById('fcScene').classList.toggle('flipped',fcFlipped);}
+function nextCard(){fcIdx=(fcIdx+1)%fcDeck.length;renderFC();}
+function prevCard(){fcIdx=(fcIdx-1+fcDeck.length)%fcDeck.length;renderFC();}
+function shuffleCards(){fcDeck=fcDeck.sort(()=>Math.random()-0.5);fcIdx=0;renderFC();}
+
+// ═══════════════════════════════
+// QUIZ (20 questions)
+// ═══════════════════════════════
+let score=0,streak=0,qIdx=0,quizDeck=[],answered=false;
+const ctxs=[
+  {e:'🏎️',t:'A Ferrari costs $300k. You saved'},
+  {e:'⚽',t:'You played'},
+  {e:'👗',t:'The sale is'},
+  {e:'🎀',t:'Your collection is'},
+  {e:'🍕',t:'The pizza is'},
+  {e:'💅',t:'The nail polish is'},
+];
+function buildQuiz(){
+  let pool=[];
+  const sh=a=>[...a].sort(()=>Math.random()-0.5);
+  fractions.forEach(f=>{
+    const o=fractions.filter(x=>x.id!==f.id);
+    pool.push({q:`${f.fraction} as a decimal is...`,a:f.decimal,wrong:sh(o.map(x=>x.decimal)).slice(0,3),tip:f.tip});
+    pool.push({q:`${f.fraction} as a percentage is...`,a:f.percent,wrong:sh(o.map(x=>x.percent)).slice(0,3),tip:f.tip});
+    pool.push({q:`${f.percent} as a fraction is...`,a:f.fraction,wrong:sh(o.map(x=>x.fraction)).slice(0,3),tip:f.tip});
+    pool.push({q:`${f.decimal} as a fraction is...`,a:f.fraction,wrong:sh(o.map(x=>x.fraction)).slice(0,3),tip:f.tip});
+  });
+  quizDeck=sh(pool).slice(0,20);
+}
+function renderQuiz(){
+  if(qIdx>=quizDeck.length){showResults();return;}
+  answered=false;
+  const q=quizDeck[qIdx];
+  const ctx=ctxs[Math.floor(Math.random()*ctxs.length)];
+  const opts=[q.a,...q.wrong.slice(0,3)].sort(()=>Math.random()-0.5);
+  const sa=q.a.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  document.getElementById('quizContainer').innerHTML=`
+    <div class="quiz-qcard">
+      <div class="quiz-ctx">${ctx.e} ${ctx.t} ${q.q.split(' ')[0]} of the way</div>
+      <div class="quiz-q">${q.q}</div>
+    </div>
+    <div class="quiz-options">
+      ${opts.map(o=>`<button class="opt-btn" onclick="selectAns(this,'${o.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}','${sa}')">${o}</button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+    <div class="quiz-footer">
+      <span class="q-counter">Q${qIdx+1} of 20</span>
+      <button class="btn btn-secondary" id="nxtBtn" onclick="nextQ()" style="display:none;">Next ➜</button>
+    </div>`;
+}
+const okMsgs=['Yasss! 💅','On fire! 🔥','Slay! ✨','Nailed it! 💎','Iconic! 🎉','Lambo level! 🏎️'];
+const noMsgs=['Almost! 💪','Check the cheat sheet! 📋','You got this! 🌟','So close! 🤏'];
+function selectAns(btn,sel,correct){
+  if(answered)return;
+  answered=true;
+  const q=quizDeck[qIdx];
+  document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb');
+  if(sel===correct){
+    btn.classList.add('correct');score++;streak++;
+    fb.innerHTML=`<span class="quiz-emoji">🎉</span>${okMsgs[Math.floor(Math.random()*okMsgs.length)]}<div class="memory-tip-quiz">💡 ${q.tip}</div>`;
+    fb.className='feedback correct';
+    if(score%5===0&&score>0)confetti();
+  } else {
+    btn.classList.add('wrong');streak=0;
+    document.querySelectorAll('.opt-btn').forEach(b=>{if(b.textContent===correct)b.classList.add('correct');});
+    fb.innerHTML=`<span class="quiz-emoji">💡</span>${noMsgs[Math.floor(Math.random()*noMsgs.length)]} Answer: <b>${correct}</b><div class="memory-tip-quiz">💡 ${q.tip}</div>`;
+    fb.className='feedback wrong';
+  }
+  document.getElementById('scoreDisp').textContent='Score: '+score;
+  document.getElementById('streakDisp').textContent='🔥 '+streak;
+  document.getElementById('nxtBtn').style.display='block';
+}
+function nextQ(){qIdx++;renderQuiz();}
+function showResults(){
+  const pct=Math.round(score/20*100);
+  let emoji,msg;
+  if(pct>=90){emoji='🏆';msg='You totally slayed! Test? Easy W! 💅';}
+  else if(pct>=75){emoji='💎';msg='Gorgeous work! Just a little more and you are set!';}
+  else if(pct>=60){emoji='✨';msg='Great effort! Review the cheat sheet and crush it!';}
+  else{emoji='💪';msg='You got this! Study the cheat sheet and try again!';}
+  document.getElementById('quizContainer').innerHTML=`
+    <div class="results-card">
+      <span class="grade-emoji">${emoji}</span>
+      <div class="sec-title">Quiz Complete!</div>
+      <div class="big-score">${pct}%</div>
+      <div class="result-msg">${msg}<br><span style="opacity:0.5;font-size:0.85rem;">${score} of 20 correct</span></div>
+      <button class="btn btn-primary" onclick="restartQuiz()">🔄 Try Again</button>
+    </div>`;
+  if(pct>=90)confetti();
+}
+function restartQuiz(){
+  score=0;streak=0;qIdx=0;
+  document.getElementById('scoreDisp').textContent='Score: 0';
+  document.getElementById('streakDisp').textContent='🔥 0';
+  buildQuiz();renderQuiz();
+}
+
+// ═══════════════════════════════
+// BALL SHOOTER GAME 🎯
+// ═══════════════════════════════
+const canvas=document.getElementById('gameCanvas');
+const ctx2=canvas.getContext('2d');
+let gScore=0,gLives=3,gActive=false,gAnimId=null;
+let balls=[],bullet=null,shooter={x:0,y:0};
+let currentQ=null,gMsgTimer=0,gMsgText='',gMsgGood=true;
+let touchAimX=null;
+
+const BALL_COLORS=['#FF2D78','#C084FC','#38BDF8','#00F5A0','#FFD700','#FF6B6B','#7C3AED','#0284C7'];
+const BALL_R=36;
+const BULLET_R=10;
+const BULLET_SPEED=10;
+const BALL_SPEED_BASE=0.7;
+
+function resizeCanvas(){
+  const wrap=document.getElementById('gameWrap');
+  canvas.width=wrap.clientWidth;
+  canvas.height=wrap.clientHeight;
+  shooter.x=canvas.width/2;
+  shooter.y=canvas.height-40;
+}
+
+function makeQuestion(){
+  const f=fractions[Math.floor(Math.random()*fractions.length)];
+  const type=Math.floor(Math.random()*3);
+  let qText,correct;
+  if(type===0){qText=`${f.fraction} as a decimal?`;correct=f.decimal;}
+  else if(type===1){qText=`${f.fraction} as a percent?`;correct=f.percent;}
+  else{qText=`${f.percent} as a fraction?`;correct=f.fraction;}
+  // Wrong answers — pick from other fractions
+  const others=fractions.filter(x=>x.id!==f.id);
+  const sh=a=>[...a].sort(()=>Math.random()-0.5);
+  let wrongs;
+  if(type===0) wrongs=sh(others.map(x=>x.decimal)).slice(0,3);
+  else if(type===1) wrongs=sh(others.map(x=>x.percent)).slice(0,3);
+  else wrongs=sh(others.map(x=>x.fraction)).slice(0,3);
+  const answers=sh([correct,...wrongs.slice(0,3)]);
+  return{qText,correct,answers,tip:f.tip};
+}
+
+function spawnBalls(){
+  if(!currentQ)return;
+  balls=[];
+  const W=canvas.width;
+  const count=currentQ.answers.length;
+  const spacing=W/(count+1);
+  const cols=[...BALL_COLORS].sort(()=>Math.random()-0.5);
+  currentQ.answers.forEach((ans,i)=>{
+    const x=spacing*(i+1);
+    const y=BALL_R+20+Math.random()*60;
+    const vx=(Math.random()-0.5)*BALL_SPEED_BASE*2;
+    const vy=BALL_SPEED_BASE*(0.5+Math.random()*0.5);
+    balls.push({x,y,vx,vy,r:BALL_R,color:cols[i%cols.length],label:ans,popped:false,popAnim:0});
+  });
+}
+
+function startGame(){
+  gScore=0;gLives=3;gActive=true;bullet=null;touchAimX=null;
+  document.getElementById('gameOverScreen').classList.remove('show');
+  updateGameUI();
+  currentQ=makeQuestion();
+  document.getElementById('gameQText').textContent=currentQ.qText;
+  resizeCanvas();
+  spawnBalls();
+  if(gAnimId)cancelAnimationFrame(gAnimId);
+  gameLoop();
+}
+
+function updateGameUI(){
+  document.getElementById('gameScoreBadge').textContent='Score: '+gScore;
+  const hearts='❤️'.repeat(gLives)+'🖤'.repeat(Math.max(0,3-gLives));
+  document.getElementById('gameLives').textContent=hearts;
+}
+
+function fireBullet(){
+  if(bullet||!gActive)return;
+  const tx=touchAimX!==null?touchAimX:shooter.x;
+  const dx=tx-shooter.x;
+  const dy=-canvas.height;
+  const len=Math.sqrt(dx*dx+dy*dy);
+  bullet={x:shooter.x,y:shooter.y,vx:(dx/len)*BULLET_SPEED,vy:(dy/len)*BULLET_SPEED,r:BULLET_R};
+}
+
+function gameLoop(){
+  gAnimId=requestAnimationFrame(gameLoop);
+  ctx2.clearRect(0,0,canvas.width,canvas.height);
+
+  // Background
+  ctx2.fillStyle='rgba(15,10,30,0.3)';
+  ctx2.fillRect(0,0,canvas.width,canvas.height);
+
+  // Draw aim line
+  if(gActive){
+    const tx=touchAimX!==null?touchAimX:shooter.x;
+    ctx2.save();
+    ctx2.setLineDash([6,8]);
+    ctx2.strokeStyle='rgba(255,255,255,0.15)';
+    ctx2.lineWidth=2;
+    ctx2.beginPath();
+    ctx2.moveTo(shooter.x,shooter.y);
+    ctx2.lineTo(tx,0);
+    ctx2.stroke();
+    ctx2.restore();
+  }
+
+  // Move & draw balls
+  balls.forEach(b=>{
+    if(b.popped){
+      b.popAnim+=0.12;
+      if(b.popAnim<1){
+        ctx2.save();
+        ctx2.globalAlpha=1-b.popAnim;
+        const r=b.r*(1+b.popAnim*1.5);
+        ctx2.beginPath();ctx2.arc(b.x,b.y,r,0,Math.PI*2);
+        ctx2.fillStyle=b.color+'44';ctx2.fill();
+        ctx2.restore();
+      }
+      return;
+    }
+    b.x+=b.vx;b.y+=b.vy;
+    if(b.x-b.r<0||b.x+b.r>canvas.width)b.vx*=-1;
+    if(b.y-b.r<0)b.vy*=-1;
+    if(b.y+b.r>canvas.height-20){b.vy*=-1;b.y=canvas.height-20-b.r;}
+
+    // Draw ball
+    const grad=ctx2.createRadialGradient(b.x-b.r*0.3,b.y-b.r*0.3,b.r*0.1,b.x,b.y,b.r);
+    grad.addColorStop(0,'rgba(255,255,255,0.25)');
+    grad.addColorStop(1,b.color);
+    ctx2.beginPath();ctx2.arc(b.x,b.y,b.r,0,Math.PI*2);
+    ctx2.fillStyle=grad;ctx2.fill();
+    ctx2.strokeStyle='rgba(255,255,255,0.3)';ctx2.lineWidth=2;ctx2.stroke();
+
+    // Label
+    ctx2.fillStyle='white';
+    ctx2.font='bold 13px Nunito,sans-serif';
+    ctx2.textAlign='center';ctx2.textBaseline='middle';
+    ctx2.fillText(b.label,b.x,b.y);
+  });
+
+  // Move & draw bullet
+  if(bullet){
+    bullet.x+=bullet.vx;bullet.y+=bullet.vy;
+
+    // Draw bullet as glowing orb
+    const bg=ctx2.createRadialGradient(bullet.x,bullet.y,1,bullet.x,bullet.y,bullet.r);
+    bg.addColorStop(0,'#fff');
+    bg.addColorStop(0.4,'#FF2D78');
+    bg.addColorStop(1,'rgba(255,45,120,0)');
+    ctx2.beginPath();ctx2.arc(bullet.x,bullet.y,bullet.r,0,Math.PI*2);
+    ctx2.fillStyle=bg;ctx2.fill();
+
+    // Check collision
+    let hit=false;
+    balls.forEach(b=>{
+      if(b.popped||hit)return;
+      const dx=bullet.x-b.x,dy=bullet.y-b.y;
+      if(Math.sqrt(dx*dx+dy*dy)<bullet.r+b.r){
+        hit=true;
+        b.popped=true;
+        if(b.label===currentQ.correct){
+          gScore+=10;gMsgText='✨ YES! +10';gMsgGood=true;
+          setTimeout(()=>{
+            currentQ=makeQuestion();
+            document.getElementById('gameQText').textContent=currentQ.qText;
+            spawnBalls();
+          },600);
+          if(gScore>0&&gScore%50===0)confetti();
+        } else {
+          gLives--;gMsgText='💔 Wrong! -1 life';gMsgGood=false;
+          if(gLives<=0){
+            gActive=false;
+            setTimeout(gameOver,400);
+          }
+        }
+        gMsgTimer=90;
+        updateGameUI();
+      }
+    });
+
+    if(hit||bullet.y<-20||bullet.x<0||bullet.x>canvas.width) bullet=null;
+  }
+
+  // Draw shooter (cannon)
+  const sx=shooter.x,sy=shooter.y;
+  ctx2.save();
+  // Base
+  ctx2.beginPath();ctx2.arc(sx,sy,18,0,Math.PI*2);
+  const sg=ctx2.createRadialGradient(sx-4,sy-4,2,sx,sy,18);
+  sg.addColorStop(0,'#C084FC');sg.addColorStop(1,'#7C3AED');
+  ctx2.fillStyle=sg;ctx2.fill();
+  ctx2.strokeStyle='rgba(255,255,255,0.4)';ctx2.lineWidth=2;ctx2.stroke();
+  // Barrel pointing toward aim
+  const tx2=touchAimX!==null?touchAimX:sx;
+  const angle=Math.atan2(0-sy,tx2-sx);
+  ctx2.translate(sx,sy);ctx2.rotate(angle);
+  ctx2.fillStyle='#fff';
+  ctx2.fillRect(10,-5,22,10);
+  ctx2.restore();
+
+  // Message overlay
+  if(gMsgTimer>0){
+    gMsgTimer--;
+    ctx2.save();
+    ctx2.globalAlpha=Math.min(1,gMsgTimer/20);
+    ctx2.font='bold 22px Nunito,sans-serif';
+    ctx2.textAlign='center';ctx2.textBaseline='middle';
+    ctx2.fillStyle=gMsgGood?'#00F5A0':'#FF6B6B';
+    ctx2.fillText(gMsgText,canvas.width/2,canvas.height/2);
+    ctx2.restore();
+  }
+}
+
+function gameOver(){
+  cancelAnimationFrame(gAnimId);
+  const pct=Math.round(gScore/100*100);
+  let emoji,msg;
+  if(gScore>=100){emoji='🏆';msg='Absolutely iconic! You crushed it! 💅';}
+  else if(gScore>=60){emoji='🔥';msg='So close to a high score! Keep going!';}
+  else if(gScore>=30){emoji='💎';msg='Not bad! Study the cheat sheet and blast again!';}
+  else{emoji='💪';msg='Practice makes perfect! You got this!';}
+  document.getElementById('goEmoji').textContent=emoji;
+  document.getElementById('goTitle').textContent='Game Over!';
+  document.getElementById('goMsg').textContent=msg;
+  document.getElementById('goScore').textContent=gScore+' pts';
+  document.getElementById('gameOverScreen').classList.add('show');
+}
+
+// Touch/click controls for game
+canvas.addEventListener('touchstart',e=>{
+  e.preventDefault();
+  if(!gActive)return;
+  const t=e.touches[0];
+  const rect=canvas.getBoundingClientRect();
+  touchAimX=(t.clientX-rect.left)*(canvas.width/rect.width);
+  fireBullet();
+},{passive:false});
+
+canvas.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(!gActive)return;
+  const t=e.touches[0];
+  const rect=canvas.getBoundingClientRect();
+  touchAimX=(t.clientX-rect.left)*(canvas.width/rect.width);
+},{passive:false});
+
+canvas.addEventListener('click',e=>{
+  if(!gActive)return;
+  const rect=canvas.getBoundingClientRect();
+  touchAimX=(e.clientX-rect.left)*(canvas.width/rect.width);
+  fireBullet();
+});
+
+window.addEventListener('resize',()=>{
+  resizeCanvas();
+  if(gActive)spawnBalls();
+});
+
+// ═══════════════════════════════
+// TABS
+// ═══════════════════════════════
+function switchTab(id,btn){
+  // Hide scrollArea sections vs game section
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+
+  if(id==='game'){
+    document.getElementById('scrollArea').style.display='none';
+    document.getElementById('sec-game').style.display='flex';
+    resizeCanvas();
+    if(!gActive)startGame();
+  } else {
+    document.getElementById('scrollArea').style.display='';
+    document.getElementById('sec-game').style.display='none';
+    document.getElementById('sec-'+id).classList.add('active');
+    document.getElementById('scrollArea').scrollTop=0;
+    if(gAnimId){cancelAnimationFrame(gAnimId);gAnimId=null;gActive=false;}
+  }
+}
+
+// ═══════════════════════════════
+// CONFETTI
+// ═══════════════════════════════
+function confetti(){
+  const cols=['#FF2D78','#C084FC','#00F5A0','#FFD700','#38BDF8','#FF6B6B'];
+  for(let i=0;i<40;i++){
+    const p=document.createElement('div');
+    p.className='confetti-p';
+    p.style.left=Math.random()*100+'vw';
+    p.style.top='-20px';
+    p.style.background=cols[Math.floor(Math.random()*cols.length)];
+    p.style.animationDelay=(Math.random()*0.8)+'s';
+    p.style.borderRadius=Math.random()>0.5?'50%':'2px';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),2800);
+  }
+}
+
+// ═══════════════════════════════
+// INIT
+// ═══════════════════════════════
+buildCheatSheet();
+buildDeck();renderFC();
+buildQuiz();renderQuiz();
+resizeCanvas();
+</script>
+</body>
+</html>
